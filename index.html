@@ -159,9 +159,106 @@ function stor(k,v){try{if(v===null)localStorage.removeItem(k);else localStorage.
 function load_(){try{const p=localStorage.getItem('ec_profile');if(p)profile=JSON.parse(p);const r=localStorage.getItem('ec_routine');if(r)savedRoutine=JSON.parse(r);}catch(e){}if(profile)enterApp();else showQuiz();}
 function isPregnant(){return profile&&(profile.life_stage==='Pregnant'||profile.life_stage==='Breastfeeding');}
 function isSensitive(){return profile&&(profile.skin_type==='Sensitive'||(profile.triggers||[]).includes('Fragrance'));}
-function expLevel(){if(!profile)return 2;return {'Bare minimum':1,'Basic routine':2,'Established routine':3,'Skincare enthusiast':4}[profile.routine_exp]||2;}
+let routineModeOverride=null;
+function expLevel(){
+  if(routineModeOverride!==null) return routineModeOverride;
+  if(!profile)return 2;
+  return {'Bare minimum':1,'Basic routine':2,'Established routine':3,'Skincare enthusiast':4}[profile.routine_exp]||2;
+}
+function setRoutineMode(basic){
+  routineModeOverride=basic?1:4;
+  renderApp('routine');
+}
 function profileCtx(){if(!profile)return '';const c=Array.isArray(profile.concerns)?profile.concerns.join(', '):'';const t=Array.isArray(profile.triggers)?profile.triggers.join(', '):'';const ls=profile.life_stage&&profile.life_stage!=='None of the above'?`Life stage: ${profile.life_stage}.`:'';return `Skin profile — Type: ${profile.skin_type}. Concerns: ${c}. Triggers: ${t}. ${ls} Age: ${profile.age_range}. Environment: ${profile.environment}. Experience: ${profile.routine_exp}. Budget: ${profile.budget}. Goal: ${profile.goals}.`;}
-function routineSys(){const exp=expLevel();const sc=exp===1?3:exp===2?4:exp===3?5:6;const act=exp<=1?'No actives — basics only.':exp===2?'One gentle active maximum.':exp===3?'1-2 targeted actives, warn about conflicts.':'Full routine with actives and conflict notes.';const pg=isPregnant()?'CRITICAL: Exclude ALL retinoids, high-dose salicylic acid, chemical sunscreens, hydroquinone. Pregnancy-safe only. Flag at top.':'';const sf=isSensitive()?'Fragrance-free and alcohol-free only.':'';const ff=routineFilters.map(f=>({fragrance_free:'All fragrance-free.',oil_free:'All oil-free non-comedogenic.',fungal_acne_safe:'Fungal acne-safe only.',pregnancy_safe:'Pregnancy-safe only.',minimal:'3 steps MAX each routine.',no_retinol:'No retinol or retinoids.',sensitive_skin:'Extra gentle, no strong actives.',silicone_free:'No silicones (dimethicone etc).'})[f]||'').filter(Boolean).join(' ');return `You are a skincare routine consultant. ${pg} ${sf} ${ff}\nRules: Max ${sc} steps per routine. ${act} No unnecessary steps — if a step adds no clear value for this person omit it. Ingredient types only, no brand names.\nFormat plain text:\n${isPregnant()?'⚠️ Pregnancy note: [brief]\n\n':''}AM Routine:\n1. [Step] — [ingredient type + why]\n\nPM Routine:\n1. [Step] — [ingredient type + why]\n\nIngredients to avoid: [list]\n\nGetting started: [1 sentence]`;}
+function routineSys(){
+const exp=expLevel();
+const pg=isPregnant()?'CRITICAL: Exclude ALL retinoids, high-dose salicylic acid, chemical sunscreens, hydroquinone. Pregnancy-safe only. Flag clearly at the top.':'';
+const sf=isSensitive()?'Fragrance-free and alcohol-free formulations only.':'';
+const ff=routineFilters.map(f=>({fragrance_free:'All products must be fragrance-free.',oil_free:'All products must be oil-free and non-comedogenic.',fungal_acne_safe:'All products must be fungal acne-safe.',pregnancy_safe:'Pregnancy-safe only — exclude retinoids, high-dose salicylic acid, hydroquinone, chemical SPF.',minimal:'MAXIMUM 3 steps per routine — no exceptions.',no_retinol:'Do not include retinol or any retinoid in any form.',sensitive_skin:'Extra gentle only. No exfoliants or strong actives.',silicone_free:'Recommend silicone-free formulations only.'})[f]||'').filter(Boolean).join(' ');
+
+const isBasic = exp <= 2;
+const isMid = exp === 3;
+const isAdv = exp === 4;
+
+const stepCount = exp===1?3:exp===2?4:exp===3?5:6;
+
+const beginnerFormat = `You are a warm, practical skincare coach helping a complete beginner build their first routine. ${pg} ${sf} ${ff}
+
+RULES:
+- Maximum ${stepCount} steps per routine — strictly enforce this. Do NOT add optional steps.
+- Write in plain, friendly English. No jargon, no latin ingredient names.
+- Never mention specific brand names.
+- Instead of ingredient names, describe what to look for in plain English: e.g. "a gentle cream or gel cleanser — look for ones labelled 'gentle', 'sensitive', or 'daily' at your pharmacy or supermarket. Usually $8–20."
+- Include price guidance in NZD where helpful (e.g. "budget $10–20").
+- For each step: say WHAT it is, WHY they need it for their specific skin, HOW to use it (how much, how long to leave it, wait time before next step if needed), and WHEN (AM, PM, or both).
+- Steps MUST be listed in the exact order the person should follow — top to bottom is the order they do it.
+- Eye cream always comes BEFORE any treatment like retinol or serum — never after.
+- Retinol/retinoid always goes on AFTER eye cream and serum, BEFORE moisturiser.
+- SPF always goes on LAST in the morning, after moisturiser. Never under it.
+- End with a "Don't buy yet" section — list 1-2 things they might be tempted by but don't need yet and why.
+- End with a "Week 1 focus" — one sentence on what to start with first.
+
+${isPregnant()?'⚠️ Pregnancy/breastfeeding note: [explain briefly what to avoid and why, in plain language]\n\n':''}Format exactly like this:
+
+YOUR MORNING ROUTINE (${stepCount<=3?3:stepCount<=4?4:stepCount} steps, takes about X minutes)
+
+Step 1 — [Name of step]
+What: [plain English description of what to buy, what to look for on the label, rough price in NZD]
+Why: [why this person specifically needs it based on their skin profile]
+How: [exactly how to use it — amount, technique, wait time]
+
+[continue for each step...]
+
+---
+
+YOUR EVENING ROUTINE (X steps, takes about X minutes)
+
+Step 1 — [Name of step]
+...
+
+---
+
+Don't buy yet: [1-2 things to skip for now and why — e.g. "eye cream — your concerns don't require it yet"]
+
+Week 1 focus: [one plain sentence on what to introduce first]`;
+
+const advancedFormat = `You are a skincare routine consultant for someone with an established routine. ${pg} ${sf} ${ff}
+
+RULES:
+- Maximum ${stepCount} steps per routine. Omit any step that adds no clear value for this person's concerns.
+- Steps listed in exact application order — top to bottom is the order to follow.
+- Eye cream always before retinoid. SPF always last in AM.
+- Retinoid after eye cream and serum, before moisturiser.
+- Include specific ingredient types to look for and why they suit this person's skin profile and concerns.
+- Flag any ingredient conflicts (e.g. don't use AHA and retinol same night when starting out).
+- Never name specific brands.
+
+${isPregnant()?'⚠️ Pregnancy note: [brief safety summary]\n\n':''}Format exactly like this:
+
+YOUR MORNING ROUTINE
+
+Step 1 — [Step name]
+Look for: [ingredient type + why it suits their skin]
+How: [application note]
+
+[continue...]
+
+---
+
+YOUR EVENING ROUTINE
+
+Step 1 — [Step name]
+Look for: [ingredient type + why]
+How: [application note]
+
+---
+
+Ingredients to avoid: [based on triggers and filters]
+Conflict notes: [any timing or layering warnings]
+Introduce first: [what to add first if changing their routine]`;
+
+return isBasic ? beginnerFormat : advancedFormat;
+}
 async function claude(messages,system){const r=await fetch('/api/analyse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system,messages})});const d=await r.json();return d.content&&d.content[0]?d.content[0].text:'Unable to generate response.';}
 function setLoading(resId,txtId){document.getElementById(resId).classList.add('show');document.getElementById(txtId).innerHTML='<div style="padding:14px 16px;"><div class="dots"><span></span><span></span><span></span></div></div>';}
 function showQuiz(){document.getElementById('hdr-sub').textContent='A few quick questions to personalise your experience';document.getElementById('qpb').style.display='block';document.getElementById('qsl').style.display='block';renderQ();}
@@ -176,7 +273,23 @@ function profileBanner(){if(!profile)return `<div class="card" style="cursor:poi
 function resBox(id,icon,iconColor,title){return `<div class="res" id="${id}"><div class="res-title"><i class="ti ${icon}" style="color:${iconColor};"></i> ${title}</div><div class="res-content" id="${id}-txt"></div>${DISCLAIMER}</div>`;}
 function analysisHTML(){return `${profileBanner()}<img id="prev" class="preview-img" alt="Skin photo"/><div class="upload-zone" id="upz"><input type="file" accept="image/*" onchange="handleImg(event)"/><i class="ti ti-photo-up" style="font-size:26px;color:var(--sd);"></i><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:6px;">Upload a close-up photo</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Optional — natural light works best</div></div><div class="lbl">Any extra notes?</div><textarea id="anotes" placeholder="e.g. My skin gets oily by midday..." style="min-height:60px;"></textarea><button class="btn" id="btn-a" onclick="runAnalysis()">Analyse my skin <i class="ti ti-arrow-right"></i></button>${resBox('res-a','ti-sparkles','var(--sd)','Skin analysis & ingredient recommendations')}`;}
 function ingredientsHTML(){const af=[];if(isPregnant())af.push('pregnancy-safe');if(isSensitive())af.push('fragrance-free');const an=af.length?`<div class="notice"><i class="ti ti-adjustments" style="color:var(--sd);margin-right:5px;"></i>Auto-applied from profile: <strong>${af.join(', ')}</strong></div>`:'';return `${profileBanner()}${an}<div class="ing-mode-row"><button class="im-btn on" id="im-photo" onclick="ingMode('photo')"><i class="ti ti-camera"></i>Label photo</button><button class="im-btn" id="im-search" onclick="ingMode('search')"><i class="ti ti-search"></i>Product name</button><button class="im-btn" id="im-paste" onclick="ingMode('paste')"><i class="ti ti-clipboard-text"></i>Paste list</button></div><div id="ing-area"><img id="ing-prev" class="preview-img" alt="Label"/><div class="upload-zone" id="ing-upz"><input type="file" accept="image/*" onchange="handleIngImg(event)"/><i class="ti ti-camera" style="font-size:26px;color:var(--sd);"></i><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:6px;">Photograph the ingredient label</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Claude reads ingredients from the photo</div></div><button class="btn" id="btn-ing" onclick="runIng()" disabled>Analyse label <i class="ti ti-arrow-right"></i></button></div><div class="res" id="res-ing"><div class="res-title"><i class="ti ti-flask" style="color:var(--sd);"></i> Ingredient breakdown</div><div class="res-content" id="res-ing-txt"></div><div class="alt-box" id="alt-box"><div class="alt-box-title"><i class="ti ti-bulb"></i> Better ingredient alternatives for your skin</div><div class="alt-box-body" id="alt-box-txt"></div></div>${DISCLAIMER}</div>`;}
-function routineHTML(){const ff=ROUTINE_FILTERS.map(f=>{const ao=(f.id==='pregnancy_safe'&&isPregnant())||(f.id==='fragrance_free'&&isSensitive());const on=ao||routineFilters.includes(f.id);return `<div class="filter-check${on?' on':''}" onclick="toggleFilter('${f.id}',${ao})" id="fc-${f.id}"><div class="fc-box">${on?`<i class="ti ti-check" style="font-size:11px;color:#EFF3EE;"></i>`:''}</div><span class="fc-lbl">${f.label}${ao?' (auto)':''}</span></div>`;}).join('');const saved=savedRoutine?`<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;"><div class="card-title">Saved routine</div><span class="saved-badge"><i class="ti ti-device-floppy"></i> ${savedRoutine.savedAt}</span></div><div style="font-size:13px;color:var(--text);line-height:1.85;white-space:pre-wrap;">${savedRoutine.text}</div><button class="btn-out" onclick="clearRoutine()"><i class="ti ti-trash"></i> Clear saved routine</button></div>`:`<div class="empty-state"><i class="ti ti-calendar-check"></i><p>No saved routine yet.<br>Build one below.</p></div>`;return `${profileBanner()}${saved}<div class="card"><div class="card-title">Build a new routine</div>${isPregnant()?`<div class="notice" style="margin-bottom:12px;border-left-color:#A32D2D;"><i class="ti ti-heart" style="color:#A32D2D;margin-right:5px;"></i> Pregnancy detected — unsafe ingredients excluded automatically.</div>`:''}<div class="lbl">Routine filters</div><div class="filter-grid">${ff}</div><div class="lbl">Any extra notes?</div><textarea id="rnotes" placeholder="e.g. I already use vitamin C, avoiding exfoliants..." style="min-height:55px;"></textarea><button class="btn" id="btn-r" onclick="runRoutine()">Build my routine <i class="ti ti-arrow-right"></i></button></div>${resBox('res-r','ti-sun','var(--warm)','Your personalised routine')}<div id="save-r-wrap" style="display:none;margin-top:8px;"><button class="btn" id="btn-save-r" onclick="saveThisRoutine()"><i class="ti ti-device-floppy"></i> Save this routine</button></div>`;}
+function routineHTML(){
+const exp=expLevel();
+const isBasic=exp<=2;
+const ff=ROUTINE_FILTERS.map(f=>{const ao=(f.id==='pregnancy_safe'&&isPregnant())||(f.id==='fragrance_free'&&isSensitive());const on=ao||routineFilters.includes(f.id);return `<div class="filter-check${on?' on':''}" onclick="toggleFilter('${f.id}',${ao})" id="fc-${f.id}"><div class="fc-box">${on?`<i class="ti ti-check" style="font-size:11px;color:#EFF3EE;"></i>`:''}</div><span class="fc-lbl">${f.label}${ao?' (auto)':''}</span></div>`;}).join('');
+const saved=savedRoutine?`<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;"><div class="card-title">Saved routine</div><span class="saved-badge"><i class="ti ti-device-floppy"></i> ${savedRoutine.savedAt}</span></div><div style="font-size:13px;color:var(--text);line-height:1.85;white-space:pre-wrap;">${savedRoutine.text}</div><button class="btn-out" onclick="clearRoutine()"><i class="ti ti-trash"></i> Clear saved routine</button></div>`:`<div class="empty-state"><i class="ti ti-calendar-check"></i><p>No saved routine yet.<br>Build one below.</p></div>`;
+const modeToggle=`<div style="display:flex;gap:8px;margin-bottom:16px;">
+  <button id="mode-basic" onclick="setRoutineMode(true)" style="flex:1;padding:10px;border-radius:9px;border:1.5px solid ${isBasic?'var(--sd)':'var(--border)'};background:${isBasic?'#EFF3EE':'var(--card)'};color:${isBasic?'#3A5A3A':'var(--muted)'};font-family:'DM Sans',sans-serif;font-size:13px;font-weight:${isBasic?'500':'400'};cursor:pointer;">
+    <i class="ti ti-leaf" style="font-size:16px;display:block;margin:0 auto 4px;"></i>Beginner<div style="font-size:10px;margin-top:2px;opacity:0.7;">Plain English guide</div>
+  </button>
+  <button id="mode-adv" onclick="setRoutineMode(false)" style="flex:1;padding:10px;border-radius:9px;border:1.5px solid ${!isBasic?'var(--sd)':'var(--border)'};background:${!isBasic?'#EFF3EE':'var(--card)'};color:${!isBasic?'#3A5A3A':'var(--muted)'};font-family:'DM Sans',sans-serif;font-size:13px;font-weight:${!isBasic?'500':'400'};cursor:pointer;">
+    <i class="ti ti-microscope" style="font-size:16px;display:block;margin:0 auto 4px;"></i>Advanced<div style="font-size:10px;margin-top:2px;opacity:0.7;">Ingredient detail</div>
+  </button>
+</div>
+<div style="background:${isBasic?'#EFF3EE':'var(--bgsec)'};border-radius:8px;padding:10px 12px;font-size:12px;color:${isBasic?'#3A5A3A':'var(--muted)'};margin-bottom:14px;line-height:1.5;">
+  ${isBasic?'<i class="ti ti-info-circle" style="font-size:13px;margin-right:4px;"></i>You'll get a step-by-step guide in plain English — what to buy, how to use it, and what order to follow.':'<i class="ti ti-info-circle" style="font-size:13px;margin-right:4px;"></i>You'll get ingredient-level recommendations with layering and conflict notes.'}
+</div>`;
+return `${profileBanner()}${saved}<div class="card"><div class="card-title" style="margin-bottom:12px;">Build a new routine</div>${isPregnant()?`<div class="notice" style="margin-bottom:12px;border-left-color:#A32D2D;"><i class="ti ti-heart" style="color:#A32D2D;margin-right:5px;"></i> Pregnancy/breastfeeding detected — unsafe ingredients excluded automatically.</div>`:''}<div class="lbl">Mode</div>${modeToggle}<div class="lbl">Filters</div><div class="filter-grid">${ff}</div><div class="lbl">Anything to add?</div><textarea id="rnotes" placeholder="${isBasic?'e.g. I want to keep it simple, I have about 5 minutes morning and night...':'e.g. I already use vitamin C, avoiding exfoliants this month...'}" style="min-height:55px;"></textarea><button class="btn" id="btn-r" onclick="runRoutine()">Build my routine <i class="ti ti-arrow-right"></i></button></div>${resBox('res-r','ti-sun','var(--warm)','Your personalised routine')}<div id="save-r-wrap" style="display:none;margin-top:8px;"><button class="btn" id="btn-save-r" onclick="saveThisRoutine()"><i class="ti ti-device-floppy"></i> Save this routine</button></div>`;}
 function newsHTML(){const cats=['All','Pregnancy','Ingredients','Routine','Pores & Texture','Sun protection'];const filtered=newscat==='All'?ARTICLES:ARTICLES.filter(a=>a.cat===newscat);if(openArticle){const a=ARTICLES.find(x=>x.id===openArticle);if(a)return `<button class="back-btn" onclick="openArticle=null;renderApp('news')"><i class="ti ti-arrow-left"></i> Back</button><div class="card"><div style="font-size:11px;font-weight:500;color:var(--sd);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:8px;">${a.cat}</div><div class="article-full-title">${a.title}</div><div class="article-full-body">${a.body}</div><div style="margin-top:14px;padding-top:12px;border-top:0.5px solid var(--border);font-size:11px;color:var(--muted);line-height:1.6;"><i class="ti ti-info-circle" style="font-size:12px;"></i> AI-generated content for general information only.</div></div>`;}const catH=cats.map(c=>`<button class="cat-chip${c===newscat?' on':''}" onclick="newscat='${c}';renderApp('news')">${c}</button>`).join('');const cardsH=filtered.map(a=>`<div class="article-card" onclick="openArticle=${a.id};renderApp('news')"><div class="article-body"><div class="article-cat"><i class="ti ${a.icon}" style="font-size:12px;margin-right:4px;"></i>${a.cat}</div><div class="article-title">${a.title}</div><div class="article-preview">${a.preview}</div></div><div class="article-footer"><span style="font-size:11px;color:var(--muted);">${a.tag}</span><i class="ti ti-arrow-right" style="font-size:14px;color:var(--sd);"></i></div></div>`).join('');return `<div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--text);margin-bottom:5px;">Tips & news</div><div style="font-size:13px;color:var(--muted);margin-bottom:16px;font-weight:300;">Evidence-based skincare guides.</div><div class="news-cats">${catH}</div>${cardsH||`<div class="empty-state"><i class="ti ti-news"></i><p>No articles in this category.</p></div>`}`;}
 function settingsHTML(){const notifs=[{id:'am',title:'Morning reminder',sub:'AM skincare routine',time:'07:30'},{id:'pm',title:'Evening reminder',sub:'PM skincare routine',time:'21:00'},{id:'weekly',title:'Weekly check-in',sub:'Review how your skin is doing',time:'09:00'}];const gs=id=>{try{return JSON.parse(localStorage.getItem('notif_'+id)||JSON.stringify({on:false,time:notifs.find(n=>n.id===id).time}));}catch(e){return{on:false,time:'08:00'};}};const rows=notifs.map(n=>{const s=gs(n.id);return `<div class="notif-row" id="nrow-${n.id}"><div style="flex:1;"><div class="n-title">${n.title}</div><div class="n-sub">${n.sub}</div>${s.on?`<input type="time" class="time-pick" id="ntime-${n.id}" value="${s.time}" onchange="saveNotif('${n.id}')"/>`:''}  </div><label class="toggle"><input type="checkbox" ${s.on?'checked':''} onchange="toggleNotif('${n.id}','${n.time}')"/><span class="tslider"></span></label></div>`;}).join('');return `<div class="card"><div class="card-title" style="margin-bottom:4px;">Routine reminders</div><div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Browser notifications — must have the app open.</div>${rows}</div><div class="card"><div class="card-title" style="margin-bottom:4px;">Your profile</div><div style="font-size:12px;color:var(--muted);margin-bottom:12px;">${profile?'Skin profile saved on this device.':'No profile saved yet.'}</div><button class="btn-sm" onclick="step=0;showQuiz()"><i class="ti ti-refresh"></i> ${profile?'Retake quiz':'Start quiz'}</button>${profile?`<button class="btn-out" onclick="clearProfile()"><i class="ti ti-trash"></i> Clear profile</button>`:''}</div><div style="font-size:11px;color:var(--muted);text-align:center;padding-bottom:4px;line-height:1.6;">All data stays on your device only.</div>`;}
 function compressImg(file,maxW,quality,cb){const img=new Image();const url=URL.createObjectURL(file);img.onload=()=>{let w=img.width,h=img.height;if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);URL.revokeObjectURL(url);cb(canvas.toDataURL('image/jpeg',quality).split(',')[1]);};img.src=url;}
