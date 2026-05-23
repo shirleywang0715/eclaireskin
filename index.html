@@ -233,63 +233,8 @@ if(isBasic){return base+' Write in plain friendly English, no jargon, no Latin i
 }
 
 async function claude(messages,system){var r=await fetch('/api/analyse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1200,system:system,messages:messages})});var d=await r.json();return d.content&&d.content[0]?d.content[0].text:'Unable to generate response.';}
-function renderRoutineOutput(txt,targetId){var el=document.getElementById(targetId);if(!el)return;var sections=parseRoutineText(txt);if(!sections.length){el.innerHTML='<div class="routine-fallback">'+txt+'</div>';return;}var html=sections.map(function(sec){var sectionClass=sec.title.match(/MORNING/i)?'morning':sec.title.match(/EVENING/i)?'evening':'';if(sec.isNotes){var notesHtml=sec.notes.map(function(n){return '<div class="step-row">'+n+'</div>';}).join('');return '<div class="routine-section '+sectionClass+'"><div class="routine-section-title">'+sec.title+'</div><div class="routine-step-body">'+notesHtml+'</div></div>';}var stepsHtml=sec.steps.map(function(step){var rowsHtml=step.rows.map(function(r){return '<div class="step-row">'+(r.label?'<span class="step-label">'+r.label+':</span> ':'')+r.text+'</div>';}).join('');return '<div class="routine-step"><div class="routine-step-name">'
-  function parseRoutineText(txt){
-    txt=txt.replace(/#{1,3}\s*/g,'').replace(/\*\*/g,'').replace(/^---+$/gm,'').replace(/^\*(.+)\*$/gm,'$1');
-  var sections=[];
-  var lines=txt.split('\n');
-  var current=null;
-  var currentStep=null;
-
-  lines.forEach(function(line){
-    var l=line.trim();
-    if(!l)return;
-
-    if(/^YOUR (MORNING|EVENING) ROUTINE/i.test(l)){
-      if(currentStep&&current)current.steps.push(currentStep);
-      currentStep=null;
-      current={title:l,steps:[],notes:[]};
-      sections.push(current);
-      return;
-    }
-
-    if(/^(GOOD TO KNOW|IMPORTANT NOTES)/i.test(l)){
-      if(currentStep&&current)current.steps.push(currentStep);
-      currentStep=null;
-      current={title:l,steps:[],notes:[],isNotes:true};
-      sections.push(current);
-      return;
-    }
-
-    if(!current){current={title:'',steps:[],notes:[],isNotes:true};sections.push(current);}
-
-    var stepMatch=l.match(/^Step\s*\d+[:.]\s*(.+)/i);
-    if(stepMatch){
-      if(currentStep)current.steps.push(currentStep);
-      currentStep={name:stepMatch[1],rows:[]};
-      return;
-    }
-
-    var rowMatch=l.match(/^(What to look for|Why you need it|How to use it|Ingredients to look for|Why)[:\s]+(.+)/i);
-    if(rowMatch&&currentStep){
-      currentStep.rows.push({label:rowMatch[1],text:rowMatch[2]});
-      return;
-    }
-
-    if(currentStep){
-      if(currentStep.rows.length>0){
-        currentStep.rows[currentStep.rows.length-1].text+=' '+l;
-      } else {
-        currentStep.rows.push({label:'',text:l});
-      }
-    } else if(current){
-      current.notes.push(l);
-    }
-  });
-
-  if(currentStep&&current)current.steps.push(currentStep);
-  return sections;
-}
+function parseRoutineText(txt){txt=txt.replace(/#{1,3}\s*/g,'').replace(/\*\*/g,'').replace(/^---+$/gm,'').replace(/^\*(.+)\*$/gm,'$1');var sections=[];var lines=txt.split('\n');var current=null;var currentStep=null;lines.forEach(function(line){var l=line.trim();if(!l)return;if(/^YOUR (MORNING|EVENING) ROUTINE/i.test(l)){if(currentStep&&current)current.steps.push(currentStep);currentStep=null;current={title:l,steps:[],notes:[]};sections.push(current);return;}if(/^(GOOD TO KNOW|IMPORTANT NOTES)/i.test(l)){if(currentStep&&current)current.steps.push(currentStep);currentStep=null;current={title:l,steps:[],notes:[],isNotes:true};sections.push(current);return;}if(!current){current={title:'',steps:[],notes:[],isNotes:true};sections.push(current);}var stepMatch=l.match(/^Step\s*\d+[:.]\s*(.+)/i);if(stepMatch){if(currentStep)current.steps.push(currentStep);currentStep={name:stepMatch[1],rows:[]};return;}var rowMatch=l.match(/^(What to look for|Why you need it|How to use it|Ingredients to look for|Why)[:\s]+(.+)/i);if(rowMatch&&currentStep){currentStep.rows.push({label:rowMatch[1],text:rowMatch[2]});return;}if(currentStep){if(currentStep.rows.length>0){currentStep.rows[currentStep.rows.length-1].text+=' '+l;}else{currentStep.rows.push({label:'',text:l});}}else if(current){current.notes.push(l);}});if(currentStep&&current)current.steps.push(currentStep);return sections;}
+function renderRoutineOutput(txt,targetId){var el=document.getElementById(targetId);if(!el)return;var sections=parseRoutineText(txt);if(!sections.length){el.innerHTML='<div class="routine-fallback">'+txt+'</div>';return;}var html=sections.map(function(sec){var sectionClass=sec.title.match(/MORNING/i)?'morning':sec.title.match(/EVENING/i)?'evening':'';if(sec.isNotes){var notesHtml=sec.notes.map(function(n){return '<div class="step-row">'+n+'</div>';}).join('');return '<div class="routine-section '+sectionClass+'"><div class="routine-section-title">'+sec.title+'</div><div class="routine-step-body">'+notesHtml+'</div></div>';}var stepsHtml=sec.steps.map(function(step){var rowsHtml=step.rows.map(function(r){return '<div class="step-row">'+(r.label?'<span class="step-label">'+r.label+':</span> ':'')+r.text+'</div>';}).join('');return '<div class="routine-step"><div class="routine-step-name">'+step.name+'</div><div class="routine-step-body">'+rowsHtml+'</div></div>';}).join('');return '<div class="routine-section '+sectionClass+'"><div class="routine-section-title">'+sec.title+'</div>'+stepsHtml+'</div>';}).join('');el.innerHTML=html||'<div class="routine-fallback">'+txt+'</div>';}
  function setLoading(resId,txtId){
   var messages={
     'res-a-txt':['Reading your skin...','Listening to what your skin is telling us...','Crafting your personalised analysis...'],
