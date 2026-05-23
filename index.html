@@ -65,6 +65,14 @@ textarea:focus{outline:none;border-color:var(--sd);}
 .res.show{display:block;}
 .res-title{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500;color:var(--text);padding:14px 16px 0;display:flex;align-items:center;gap:6px;}
 .res-content{font-size:13px;color:var(--text);line-height:1.8;white-space:pre-wrap;padding:10px 16px 14px;}
+  .routine-section{margin-bottom:20px;}
+.routine-section-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:0.5px solid var(--border);}
+.routine-step{border:0.5px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;background:var(--card);}
+.routine-step-name{font-size:13px;font-weight:600;color:var(--sd);margin-bottom:6px;}
+.routine-step-body{font-size:12px;color:var(--text);line-height:1.7;}
+.routine-step-body .step-row{margin-bottom:3px;}
+.routine-step-body .step-label{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;}
+.routine-fallback{font-size:13px;color:var(--text);line-height:1.8;white-space:pre-wrap;padding:4px 0;}
 .disclaimer{background:var(--bgsec);border-top:0.5px solid var(--border);padding:10px 14px;display:flex;gap:8px;align-items:flex-start;}
 .disclaimer i{font-size:14px;color:var(--muted);flex-shrink:0;margin-top:1px;}
 .disclaimer p{font-size:11px;color:var(--muted);line-height:1.6;}
@@ -200,7 +208,88 @@ function routineSys(){
 }
 
 async function claude(messages,system){var r=await fetch('/api/analyse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1200,system:system,messages:messages})});var d=await r.json();return d.content&&d.content[0]?d.content[0].text:'Unable to generate response.';}
-function setLoading(resId,txtId){document.getElementById(resId).classList.add('show');document.getElementById(txtId).innerHTML='<div style="padding:14px 16px;"><div class="dots"><span></span><span></span><span></span></div></div>';}
+function renderRoutineOutput(txt,targetId){
+  var el=document.getElementById(targetId);
+  if(!el)return;
+  var sections=parseRoutineText(txt);
+  if(!sections.length){el.innerHTML='<div class="routine-fallback">'+txt+'</div>';return;}
+
+  var html=sections.map(function(sec){
+    if(sec.isNotes){
+      var notesHtml=sec.notes.map(function(n){
+        return '<div class="step-row">'+n+'</div>';
+      }).join('');
+      return '<div class="routine-section"><div class="routine-section-title">'+sec.title+'</div><div class="routine-step-body">'+notesHtml+'</div></div>';
+    }
+
+    var stepsHtml=sec.steps.map(function(step){
+      var rowsHtml=step.rows.map(function(r){
+        return '<div class="step-row">'+(r.label?'<span class="step-label">'+r.label+':</span> ':'')+r.text+'</div>';
+      }).join('');
+      return '<div class="routine-step"><div class="routine-step-name">'+step.name+'</div><div class="routine-step-body">'+rowsHtml+'</div></div>';
+    }).join('');
+
+    return '<div class="routine-section"><div class="routine-section-title">'+sec.title+'</div>'+stepsHtml+'</div>';
+  }).join('');
+
+  el.innerHTML=html||'<div class="routine-fallback">'+txt+'</div>';
+}
+  function parseRoutineText(txt){
+  var sections=[];
+  var lines=txt.split('\n');
+  var current=null;
+  var currentStep=null;
+
+  lines.forEach(function(line){
+    var l=line.trim();
+    if(!l)return;
+
+    if(/^YOUR (MORNING|EVENING) ROUTINE/i.test(l)){
+      if(currentStep&&current)current.steps.push(currentStep);
+      currentStep=null;
+      current={title:l,steps:[],notes:[]};
+      sections.push(current);
+      return;
+    }
+
+    if(/^(GOOD TO KNOW|IMPORTANT NOTES)/i.test(l)){
+      if(currentStep&&current)current.steps.push(currentStep);
+      currentStep=null;
+      current={title:l,steps:[],notes:[],isNotes:true};
+      sections.push(current);
+      return;
+    }
+
+    if(!current){current={title:'',steps:[],notes:[],isNotes:true};sections.push(current);}
+
+    var stepMatch=l.match(/^Step\s*\d+[:.]\s*(.+)/i);
+    if(stepMatch){
+      if(currentStep)current.steps.push(currentStep);
+      currentStep={name:stepMatch[1],rows:[]};
+      return;
+    }
+
+    var rowMatch=l.match(/^(What to look for|Why you need it|How to use it|Ingredients to look for|Why)[:\s]+(.+)/i);
+    if(rowMatch&&currentStep){
+      currentStep.rows.push({label:rowMatch[1],text:rowMatch[2]});
+      return;
+    }
+
+    if(currentStep){
+      if(currentStep.rows.length>0){
+        currentStep.rows[currentStep.rows.length-1].text+=' '+l;
+      } else {
+        currentStep.rows.push({label:'',text:l});
+      }
+    } else if(current){
+      current.notes.push(l);
+    }
+  });
+
+  if(currentStep&&current)current.steps.push(currentStep);
+  return sections;
+}
+  function setLoading(resId,txtId){document.getElementById(resId).classList.add('show');document.getElementById(txtId).innerHTML='<div style="padding:14px 16px;"><div class="dots"><span></span><span></span><span></span></div></div>';}
 function compressImg(file,maxW,quality,cb){var img=new Image();var url=URL.createObjectURL(file);img.onload=function(){var w=img.width,h=img.height;if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}var canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);URL.revokeObjectURL(url);cb(canvas.toDataURL('image/jpeg',quality).split(',')[1]);};img.src=url;}
 
 function showQuiz(){document.getElementById('hdr-sub').textContent='A few quick questions to personalise your experience';document.getElementById('qpb').style.display='block';document.getElementById('qsl').style.display='block';renderQ();}
@@ -248,7 +337,7 @@ function toggleFilter(id,autoOn){if(autoOn)return;var idx=routineFilters.indexOf
 
 async function runAnalysis(){var btn=document.getElementById('btn-a');btn.disabled=true;setLoading('res-a','res-a-txt');var notes=document.getElementById('anotes').value.trim();var content=[];if(imgB64)content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:imgB64}});content.push({type:'text',text:profileCtx()+'\nNotes: '+(notes||'None')+'.'});try{var txt=await claude([{role:'user',content:content}],'You are a skincare advisor. Analyse skin in plain text:\n1. Skin assessment\n2. Key priorities - 2-3 focus areas\n3. Recommended ingredients - types + why they suit this person\n4. Ingredients to avoid\nWarm, evidence-based, under 350 words. No brand names.');document.getElementById('res-a-txt').textContent=txt;}catch(e){document.getElementById('res-a-txt').textContent='Something went wrong. Please try again.';}btn.disabled=false;}
 
-async function runRoutine(){var btn=document.getElementById('btn-r');btn.disabled=true;setLoading('res-r','res-r-txt');if(isPregnant()&&!routineFilters.includes('pregnancy_safe'))routineFilters.push('pregnancy_safe');if(isSensitive()&&!routineFilters.includes('fragrance_free'))routineFilters.push('fragrance_free');var notes=document.getElementById('rnotes')?document.getElementById('rnotes').value.trim():'';var extras=document.getElementById('extra-steps')?document.getElementById('extra-steps').value.trim():'';var extraNote=extras?'The user also wants to include: '+extras+'. Work these into the routine in the correct position.':'';try{var txt=await claude([{role:'user',content:profileCtx()+'\nFilters: '+(routineFilters.join(', ')||'none')+'.\nNotes: '+(notes||'None')+'. '+extraNote}],routineSys());document.getElementById('res-r-txt').textContent=txt;var wrap=document.getElementById('save-r-wrap');if(wrap)wrap.style.display='block';}catch(e){document.getElementById('res-r-txt').textContent='Something went wrong. Please try again.';}btn.disabled=false;}
+async function runRoutine(){var btn=document.getElementById('btn-r');btn.disabled=true;setLoading('res-r','res-r-txt');if(isPregnant()&&!routineFilters.includes('pregnancy_safe'))routineFilters.push('pregnancy_safe');if(isSensitive()&&!routineFilters.includes('fragrance_free'))routineFilters.push('fragrance_free');var notes=document.getElementById('rnotes')?document.getElementById('rnotes').value.trim():'';var extras=document.getElementById('extra-steps')?document.getElementById('extra-steps').value.trim():'';var extraNote=extras?'The user also wants to include: '+extras+'. Work these into the routine in the correct position.':'';try{var txt=await claude([{role:'user',content:profileCtx()+'\nFilters: '+(routineFilters.join(', ')||'none')+'.\nNotes: '+(notes||'None')+'. '+extraNote}],routineSys());renderRoutineOutput(txt,'res-r-txt');var wrap=document.getElementById('save-r-wrap');if(wrap)wrap.style.display='block';}catch(e){document.getElementById('res-r-txt').textContent='Something went wrong. Please try again.';}btn.disabled=false;}
 
 async function saveThisRoutine(){var txt=document.getElementById('res-r-txt').textContent;if(!txt)return;savedRoutine={text:txt,savedAt:new Date().toLocaleDateString('en-NZ',{day:'numeric',month:'short',year:'numeric'})};stor('ec_routine',savedRoutine);var btn=document.getElementById('btn-save-r');btn.innerHTML='<i class="ti ti-circle-check"></i> Saved!';btn.disabled=true;setTimeout(function(){renderApp('routine');},1200);}
 async function clearRoutine(){savedRoutine=null;stor('ec_routine',null);renderApp('routine');}
