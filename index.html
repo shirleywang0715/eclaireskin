@@ -11,9 +11,9 @@
 :root{--sd:#5A7A5A;--sage:#6B8F6B;--sl:#EFF3EE;--warm:#A07840;--bg:#F8F4EE;--card:#fff;--border:#E0E0D8;--text:#2C2C28;--muted:#5C5C52;--bgsec:#F3F0EA;}
 @media(prefers-color-scheme:dark){:root{--bg:#1A1A18;--card:#242420;--border:#3A3A35;--text:#E8E4DC;--muted:#B8B8AC;--bgsec:#2A2A26;--sl:#D0D8D0;--warm:#C9A97A;--sage:#8A9E8A;}}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:0;}
-.shell{width:100%;max-width:600px;background:var(--card);min-height:100vh;display:flex;flex-direction:column;}
-.hdr{background:linear-gradient(135deg,#3D5C3D 0%,#5A7A5A 50%,#6B8F6B 100%);padding:16px 20px 12px;flex-shrink:0;box-shadow:0 2px 12px rgba(0,0,0,0.15);}
-.hdr h1{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:#EFF3EE;letter-spacing:0.02em;}
+.shell{width:100%;max-width:600px;background:var(--bg);min-height:100vh;display:flex;flex-direction:column;}
+.hdr{background:linear-gradient(135deg,#3D5C3D 0%,#5A7A5A 50%,#6B8F6B 100%);padding:20px 20px 16px;flex-shrink:0;box-shadow:0 2px 12px rgba(0,0,0,0.15);}
+.hdr h1{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:#EFF3EE;letter-spacing:0.03em;}
 .hdr p{font-size:11px;color:rgba(239,243,238,0.65);margin-top:2px;font-weight:300;}
 .pb{height:3px;background:rgba(255,255,255,0.2);margin-top:10px;border-radius:2px;display:none;}
 .pf{height:3px;background:#EFF3EE;border-radius:2px;transition:width 0.4s;}
@@ -22,10 +22,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;disp
 .nb{flex:1;min-width:58px;padding:14px 4px;border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;border-bottom:2px solid transparent;letter-spacing:0.03em;text-transform:uppercase;transition:color 0.15s;white-space:nowrap;}
 .nb i{font-size:20px;}
 .nb.on{color:var(--sd);border-bottom-color:var(--sd);}
-.pnl{padding:20px;flex:1;overflow-y:auto;}
+.pnl{padding:20px 20px 24px;flex:1;overflow-y:auto;}
 .lbl{font-size:11px;font-weight:500;color:var(--muted);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:8px;}
-.card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;}
-.card-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--text);margin-bottom:8px;}
+.card{background:var(--card);border:0.5px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--text);margin-bottom:10px;letter-spacing:0.01em;}
 .tag-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
 .tag{padding:3px 10px;border-radius:12px;font-size:11px;font-weight:500;background:#EFF3EE;color:#3A5A3A;border:1px solid #C5D5C5;}
 .tag.w{background:var(--wl);color:#7A5A2A;border-color:#DFC9A0;}
@@ -47,7 +47,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;disp
 .btn-sm:hover{background:var(--sage);}
 .opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px;}
 .opt-grid.c1{grid-template-columns:1fr;}
-.ob{border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;background:var(--card);cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;transition:all 0.15s;display:flex;align-items:center;gap:9px;-webkit-tap-highlight-color:transparent;}
+.ob{border:1.5px solid var(--border);border-radius:12px;padding:13px 14px;background:var(--card);cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;transition:all 0.15s;display:flex;align-items:center;gap:10px;-webkit-tap-highlight-color:transparent;box-shadow:0 1px 4px rgba(0,0,0,0.04);}
 .ob:active{transform:scale(0.97);background:var(--bgsec);}
 .ob:focus{outline:none;}
 .ob:hover{border-color:var(--sd);background:var(--bgsec);}
@@ -134,10 +134,11 @@ textarea:focus{outline:none;border-color:var(--sd);}
 .back-btn:hover{color:var(--sd);}
 .article-full-title{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:500;color:var(--text);line-height:1.4;margin-bottom:12px;}
 .article-full-body{font-size:13px;color:var(--text);line-height:1.85;white-space:pre-wrap;}
-.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:600px;background:var(--card);border-top:0.5px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom);}
-.bnav .nb{flex:1;padding:8px 4px 6px;border:none;border-top:2px solid transparent;border-bottom:none;}
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:600px;background:var(--card);border-top:0.5px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -4px 20px rgba(0,0,0,0.06);}
+.bnav .nb{flex:1;padding:12px 4px 8px;border:none;border-top:2px solid transparent;border-bottom:none;font-size:11px;text-transform:capitalize;letter-spacing:0.01em;}
 .bnav .nb.on{border-top-color:var(--sd);border-bottom:none;}
-.pnl{padding-bottom:80px;}
+.bnav .nb i{font-size:22px;}
+.pnl{padding-bottom:100px;}
 </style>
   <link rel="manifest" href="/manifest.json"/>
 <meta name="theme-color" content="#5A7A5A"/>
@@ -342,7 +343,15 @@ function enterApp(){document.getElementById('hdr-sub').textContent=TAGLINE;docum
 function renderApp(tab){var tabs=[{id:'analysis',icon:'ti-scan',lbl:'Skin scan'},{id:'ingredients',icon:'ti-flask',lbl:'Ingredients'},{id:'routine',icon:'ti-calendar-check',lbl:'Routine'},{id:'news',icon:'ti-news',lbl:'Tips'},{id:'settings',icon:'ti-bell',lbl:'Reminders'}];var nav=tabs.map(function(t){return '<button class="nb'+(t.id===tab?' on':'')+'" onclick="renderApp(\''+t.id+'\')"><i class="ti '+t.icon+'"></i>'+t.lbl+'</button>';}).join('');var body='';if(tab==='analysis')body=analysisHTML();else if(tab==='ingredients')body=ingredientsHTML();else if(tab==='routine')body=routineHTML();else if(tab==='news')body=newsHTML();else body=settingsHTML();document.getElementById('main').innerHTML='<div class="pnl" id="tab-body" style="overflow-y:auto;flex:1;">'+body+'</div>';
 var bn=document.getElementById('bnav');if(bn)bn.outerHTML='';document.getElementById('app').insertAdjacentHTML('beforeend','<nav class="bnav" id="bnav">'+nav+'</nav>');}
 
-function profileBanner(){if(!profile)return '<div class="card" style="cursor:pointer;" onclick="step=0;showQuiz()"><div style="display:flex;align-items:center;gap:10px;"><i class="ti ti-user-plus" style="font-size:20px;color:var(--sd);"></i><div><div style="font-size:13px;font-weight:500;color:var(--text);">No profile yet</div><div style="font-size:12px;color:var(--muted);">Complete the quiz to personalise results</div></div></div></div>';var c=Array.isArray(profile.concerns)?profile.concerns.slice(0,3).join(' - '):'';var pb=isPregnant()?'<span class="tag r" style="margin-left:6px;font-size:10px;"><i class="ti ti-heart" style="font-size:10px;"></i> '+profile.life_stage+'</span>':'';return '<div class="card" style="cursor:pointer;" onclick="completeProfile()"><div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--sd);display:flex;align-items:center;justify-content:center;"><i class="ti ti-user" style="font-size:15px;color:#EFF3EE;"></i></div><div style="flex:1;">'<div style="font-size:13px;font-weight:500;color:var(--text);">'+profile.skin_type+' skin</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">'+(Array.isArray(profile.goals)?profile.goals.join(' · '):profile.goals)+pb+'</div><div style="font-size:11px;color:var(--muted);margin-top:1px;">'+c+'</div></div><span class="saved-badge"><i class="ti ti-device-floppy"></i> Saved</span></div></div>';}
+function profileBanner(){
+  if(!profile)return '<div class="card" style="cursor:pointer;border-style:dashed;" onclick="step=0;showQuiz()"><div style="display:flex;align-items:center;gap:12px;"><div style="width:40px;height:40px;border-radius:50%;background:var(--bgsec);border:1.5px dashed var(--border);display:flex;align-items:center;justify-content:center;"><i class="ti ti-user-plus" style="font-size:18px;color:var(--muted);"></i></div><div><div style="font-family:\'Cormorant Garamond\',serif;font-size:16px;color:var(--text);">Begin your skin profile</div><div style="font-size:12px;color:var(--muted);margin-top:2px;">A few questions to personalise everything</div></div></div></div>';
+  var goals=Array.isArray(profile.goals)?profile.goals:[];
+  var concerns=Array.isArray(profile.concerns)?profile.concerns.slice(0,3):[];
+  var pb=isPregnant()?'<span class="tag r"><i class="ti ti-heart" style="font-size:10px;"></i> '+profile.life_stage+'</span>':'';
+  var goalTags=goals.map(function(g){return '<span class="tag w">'+g+'</span>';}).join('');
+  var concernTags=concerns.map(function(c){return '<span class="tag">'+c+'</span>';}).join('');
+  return '<div class="card" style="cursor:pointer;" onclick="completeProfile()"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;"><div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--sd),var(--sage));display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ti ti-user" style="font-size:17px;color:#EFF3EE;"></i></div><div style="flex:1;"><div style="font-family:\'Cormorant Garamond\',serif;font-size:17px;color:var(--text);">'+profile.skin_type+' skin</div><div style="font-size:11px;color:var(--muted);margin-top:1px;">'+profile.age_range+' · '+profile.budget+'</div></div><span class="saved-badge"><i class="ti ti-device-floppy"></i> Saved</span></div><div style="display:flex;flex-wrap:wrap;gap:5px;">'+goalTags+concernTags+pb+'</div></div>';
+}
 function resBox(id,icon,iconColor,title){return '<div class="res" id="'+id+'"><div class="res-title"><i class="ti '+icon+'" style="color:'+iconColor+';"></i> '+title+'</div><div class="res-content" id="'+id+'-txt"></div>'+DISCLAIMER+'</div>';}
 
 function analysisHTML(){return profileBanner()+'<img id="prev" class="preview-img" alt="Skin photo"/><div class="upload-zone" id="upz"><input type="file" accept="image/*" onchange="handleImg(event)"/><i class="ti ti-photo-up" style="font-size:28px;color:var(--sd);"></i><div style="font-family:\'Cormorant Garamond\',serif;font-size:17px;font-weight:400;color:var(--text);margin-top:8px;">Your skin has a story.</div><div style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.6;">Upload a close-up photo and let\'s read it together.<br>Natural light works best — no filter needed.</div></div><div class="lbl">Any extra notes?</div><textarea id="anotes" placeholder="e.g. My skin gets oily by midday..." style="min-height:60px;"></textarea><button class="btn" id="btn-a" onclick="runAnalysis()">Read my skin <i class="ti ti-arrow-right"></i></button>'+resBox('res-a','ti-sparkles','var(--sd)','Skin analysis & ingredient recommendations');}
