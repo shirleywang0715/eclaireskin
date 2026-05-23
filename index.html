@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>ÉclaireSkin — AI Skincare Advisor</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.x/dist/tabler-icons.min.css"/>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
-:root{--sd:#5A7A5A;--sage:#8A9E8A;--sl:#EFF3EE;--warm:#C9A97A;--wl:#FAF0E0;--bg:#F8F4EE;--card:#fff;--border:#E0E0D8;--text:#2C2C28;--muted:#7A7A6E;--bgsec:#F3F0EA;}
-@media(prefers-color-scheme:dark){:root{--bg:#1A1A18;--card:#242420;--border:#3A3A35;--text:#E8E4DC;--muted:#9A9A8E;--bgsec:#2A2A26;--sl:#D0D8D0;}}
+:root{--sd:#5A7A5A;--sage:#6B8F6B;--sl:#EFF3EE;--warm:#A07840;--bg:#F8F4EE;--card:#fff;--border:#E0E0D8;--text:#2C2C28;--muted:#5C5C52;--bgsec:#F3F0EA;}
+@media(prefers-color-scheme:dark){:root{--bg:#1A1A18;--card:#242420;--border:#3A3A35;--text:#E8E4DC;--muted:#B8B8AC;--bgsec:#2A2A26;--sl:#D0D8D0;--warm:#C9A97A;--sage:#8A9E8A;}}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:0;}
 .shell{width:100%;max-width:600px;background:var(--card);min-height:100vh;display:flex;flex-direction:column;}
 .hdr{background:var(--sd);padding:16px 20px 12px;flex-shrink:0;}
@@ -145,7 +145,7 @@ textarea:focus{outline:none;border-color:var(--sd);}
     <div class="pb" id="qpb"><div class="pf" id="qpf"></div></div>
     <div class="sl" id="qsl"></div>
   </div>
-  <div id="main" style="display:flex;flex-direction:column;flex:1;overflow:hidden;"></div>
+  <main id="main" style="display:flex;flex-direction:column;flex:1;overflow:hidden;"></main>
 </div>
 
 <script>
