@@ -203,8 +203,8 @@ function routineSys(){
   var base='You are a warm, knowledgeable skincare advisor helping a real person build a practical daily routine. Write in second person ("you", "your"). '+pg+' '+sf+' '+ff+' '+order+' '+budget_nzd+' '+brand_note+' Never suggest exact product SKUs or shade names. Never suggest brands the user has not listed. Never use Latin ingredient names for beginner-mode users.';
   var fmt_basic='FORMAT YOUR RESPONSE EXACTLY LIKE THIS:\n\nYOUR MORNING ROUTINE (X steps — about X minutes)\nStep 1: [Step name]\nWhat to look for: [plain English description of what to buy, price range'+(brands?', and product line from preferred brands if suitable':'')+'\nWhy you need it: [one sentence tailored to their skin]\nHow to use it: [brief, practical instruction]\n\n[repeat for each step, always ending with SPF]\n\nYOUR EVENING ROUTINE (X steps — about X minutes)\n[same format, always ending with a night moisturiser]\n\n'+caveats;
   var fmt_adv='FORMAT YOUR RESPONSE EXACTLY LIKE THIS:\n\nYOUR MORNING ROUTINE (X steps)\nStep 1: [Step name]\nIngredients to look for: [ingredient types'+(brands?', product line from preferred brands if suitable':'')+'\nWhy: [brief tailored reason, include any layering or conflict notes]\n\n[repeat for each step, always ending with SPF]\n\nYOUR EVENING ROUTINE (X steps)\n[same format, always ending with a night moisturiser]\n\n'+caveats;
-  if(isBasic){return base+' Write in plain friendly English, no jargon, no Latin ingredient names. '+fmt_basic;}
-  return base+' Use ingredient-level detail for an experienced user. '+fmt_adv;
+if(isBasic){return base+' Write in plain friendly English, no jargon, no Latin ingredient names. No markdown - no asterisks, no hashes, no --- dividers. '+fmt_basic;}
+  return base+' Use ingredient-level detail for an experienced user. No markdown - no asterisks, no hashes, no --- dividers. '+fmt_adv;
 }
 
 async function claude(messages,system){var r=await fetch('/api/analyse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1200,system:system,messages:messages})});var d=await r.json();return d.content&&d.content[0]?d.content[0].text:'Unable to generate response.';}
@@ -235,6 +235,7 @@ function renderRoutineOutput(txt,targetId){
   el.innerHTML=html||'<div class="routine-fallback">'+txt+'</div>';
 }
   function parseRoutineText(txt){
+    txt=txt.replace(/#{1,3}\s*/g,'').replace(/\*\*/g,'').replace(/^---+$/gm,'').replace(/^\*(.+)\*$/gm,'$1');
   var sections=[];
   var lines=txt.split('\n');
   var current=null;
