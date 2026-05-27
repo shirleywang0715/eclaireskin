@@ -2,16 +2,20 @@
   "version": 2,
   "builds": [
     { "src": "index.html", "use": "@vercel/static" },
+    { "src": "app.html", "use": "@vercel/static" },
     { "src": "manifest.json", "use": "@vercel/static" },
     { "src": "sw.js", "use": "@vercel/static" },
     { "src": "icon-192.png", "use": "@vercel/static" },
     { "src": "icon-512.png", "use": "@vercel/static" },
+    { "src": "privacy.html", "use": "@vercel/static" },
     { "src": "api/analyse.js", "use": "@vercel/node" },
     { "src": "api/subscribe.js", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/api/analyse", "dest": "/api/analyse.js" },
     { "src": "/api/subscribe", "dest": "/api/subscribe.js" },
+    { "src": "/privacy", "dest": "/privacy.html" },
+    { "src": "/app", "dest": "/app.html" },
     { "src": "/manifest.json", "dest": "/manifest.json" },
     { "src": "/sw.js", "dest": "/sw.js" },
     { "src": "/icon-192.png", "dest": "/icon-192.png" },
