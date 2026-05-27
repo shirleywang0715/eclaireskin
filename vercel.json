@@ -6,10 +6,12 @@
     { "src": "sw.js", "use": "@vercel/static" },
     { "src": "icon-192.png", "use": "@vercel/static" },
     { "src": "icon-512.png", "use": "@vercel/static" },
-    { "src": "api/analyse.js", "use": "@vercel/node" }
+    { "src": "api/analyse.js", "use": "@vercel/node" },
+    { "src": "api/subscribe.js", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/api/analyse", "dest": "/api/analyse.js" },
+    { "src": "/api/subscribe", "dest": "/api/subscribe.js" },
     { "src": "/manifest.json", "dest": "/manifest.json" },
     { "src": "/sw.js", "dest": "/sw.js" },
     { "src": "/icon-192.png", "dest": "/icon-192.png" },
