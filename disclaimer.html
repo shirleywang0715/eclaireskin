@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Disclaimer — ÉclaireSkin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --sage: #4A7C59;
+      --sage-light: #f0f5f1;
+      --sage-mid: #d4e4d9;
+      --sage-dark: #2d4f39;
+      --ink: #1a1a18;
+      --mid: #5a5a55;
+      --pale: #f8f9f6;
+      --white: #ffffff;
+      --amber: #c8a96e;
+      --amber-light: #faf5ec;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      background: var(--pale);
+      color: var(--ink);
+      line-height: 1.75;
+      font-size: 16px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--sage-mid);
+      padding: 0 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--sage);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+
+    .logo span {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--mid);
+      font-size: 0.85rem;
+      margin-left: 0.75rem;
+    }
+
+    nav a {
+      font-size: 0.8rem;
+      color: var(--sage);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--sage-mid);
+      padding-bottom: 1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    nav a:hover { color: var(--sage-dark); border-color: var(--sage-dark); }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--sage-dark);
+      color: var(--white);
+      padding: 4rem 2rem 3rem;
+    }
+
+    .hero-inner { max-width: 900px; margin: 0 auto; }
+
+    .doc-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--sage-mid);
+      margin-bottom: 0.75rem;
+    }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-weight: 300;
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      font-size: 0.8rem;
+      color: var(--sage-mid);
+    }
+
+    .hero-meta span strong { color: var(--white); font-weight: 400; }
+
+    /* ── SUMMARY CARD ── */
+    .summary-card {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      transform: translateY(-1.5rem);
+    }
+
+    .card-inner {
+      background: var(--white);
+      border: 1px solid var(--sage-mid);
+      border-radius: 6px;
+      padding: 1.75rem 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .card-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--sage);
+      font-weight: 500;
+    }
+
+    .card-value {
+      font-size: 0.88rem;
+      color: var(--ink);
+    }
+
+    /* ── LAYOUT ── */
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem 4rem;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .toc {
+      position: sticky;
+      top: 80px;
+      padding: 1rem 0 2rem;
+    }
+
+    .toc-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .toc ol { list-style: none; counter-reset: toc; }
+
+    .toc ol li {
+      counter-increment: toc;
+      margin-bottom: 0.35rem;
+    }
+
+    .toc ol li a {
+      font-size: 0.78rem;
+      color: var(--mid);
+      text-decoration: none;
+      display: flex;
+      gap: 0.5rem;
+      align-items: baseline;
+      transition: color 0.2s;
+      line-height: 1.4;
+    }
+
+    .toc ol li a::before {
+      content: counter(toc, decimal-leading-zero);
+      font-size: 0.65rem;
+      color: var(--sage);
+      flex-shrink: 0;
+    }
+
+    .toc ol li a:hover { color: var(--sage-dark); }
+
+    /* ── CONTENT ── */
+    .content { padding-top: 2rem; }
+
+    section {
+      margin-bottom: 3rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--sage-mid);
+    }
+
+    section:last-of-type { border-bottom: none; }
+
+    .section-number {
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--sage);
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+    }
+
+    h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.75rem;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    h3 {
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--sage-dark);
+      margin: 1.5rem 0 0.6rem;
+    }
+
+    p { margin-bottom: 0.9rem; font-size: 0.92rem; }
+
+    ul, ol { margin: 0.5rem 0 1rem 1.25rem; }
+
+    li { font-size: 0.92rem; margin-bottom: 0.4rem; }
+
+    /* ── CALLOUT VARIANTS ── */
+    .callout {
+      border-left: 3px solid var(--sage);
+      background: var(--sage-light);
+      padding: 1rem 1.25rem;
+      border-radius: 0 4px 4px 0;
+      margin: 1.25rem 0;
+      font-size: 0.88rem;
+      color: var(--mid);
+      font-style: italic;
+      line-height: 1.65;
+    }
+
+    .callout strong { color: var(--sage-dark); font-style: normal; }
+
+    /* The prominent warning callout — amber */
+    .warning {
+      border-left: 3px solid var(--amber);
+      background: var(--amber-light);
+      padding: 1.25rem 1.5rem;
+      border-radius: 0 6px 6px 0;
+      margin: 1.5rem 0;
+    }
+
+    .warning .warning-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--amber);
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .warning p {
+      font-size: 0.92rem;
+      color: var(--ink);
+      margin-bottom: 0;
+      line-height: 1.65;
+    }
+
+    /* ── NEVER / ALWAYS TABLE ── */
+    .boundary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+
+    .boundary-col {
+      border-radius: 4px;
+      padding: 1.1rem 1.25rem;
+    }
+
+    .boundary-col.never { background: #fdf3f3; border: 1px solid #e8c8c8; }
+    .boundary-col.always { background: var(--sage-light); border: 1px solid var(--sage-mid); }
+
+    .boundary-col h4 {
+      font-size: 0.65rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+    }
+
+    .boundary-col.never h4 { color: #b04040; }
+    .boundary-col.always h4 { color: var(--sage); }
+
+    .boundary-col ul { margin: 0; padding: 0; list-style: none; }
+
+    .boundary-col li {
+      font-size: 0.82rem;
+      margin-bottom: 0.45rem;
+      padding-left: 1rem;
+      position: relative;
+      color: var(--ink);
+    }
+
+    .boundary-col.never li::before { content: "✕"; position: absolute; left: 0; color: #b04040; font-size: 0.7rem; }
+    .boundary-col.always li::before { content: "✓"; position: absolute; left: 0; color: var(--sage); font-size: 0.7rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink);
+      color: rgba(255,255,255,0.5);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      font-size: 0.78rem;
+      line-height: 1.8;
+    }
+
+    footer a { color: var(--sage-mid); text-decoration: none; }
+    footer a:hover { color: var(--white); }
+
+    footer .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 700px) {
+      .page { grid-template-columns: 1fr; gap: 0; }
+      .toc { display: none; }
+      .hero { padding: 2.5rem 1.25rem 2rem; }
+      .page { padding: 0 1.25rem 3rem; }
+      .summary-card { padding: 0 1.25rem; }
+      .boundary-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="/">ÉclaireSkin <span>AI skincare guidance</span></a>
+    <nav><a href="/terms">Terms of Use →</a></nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <p class="doc-label">Legal · Disclaimer</p>
+    <h1>Disclaimer</h1>
+    <div class="hero-meta">
+      <span><strong>Last updated:</strong> 29 May 2026</span>
+      <span><strong>Applies to:</strong> All ÉclaireSkin features</span>
+    </div>
+  </div>
+</div>
+
+<!-- Summary card pulled out of hero -->
+<div class="summary-card">
+  <div class="card-inner">
+    <div class="card-item">
+      <span class="card-label">What we are</span>
+      <span class="card-value">AI-powered skincare guidance</span>
+    </div>
+    <div class="card-item">
+      <span class="card-label">What we are not</span>
+      <span class="card-value">A medical service or diagnostic tool</span>
+    </div>
+    <div class="card-item">
+      <span class="card-label">AI provider</span>
+      <span class="card-value">Claude by Anthropic</span>
+    </div>
+    <div class="card-item">
+      <span class="card-label">When in doubt</span>
+      <span class="card-value">See a dermatologist</span>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+  <aside class="toc">
+    <p class="toc-label">Contents</p>
+    <ol>
+      <li><a href="#d1">The short version</a></li>
+      <li><a href="#d2">Not medical advice</a></li>
+      <li><a href="#d3">AI-generated content</a></li>
+      <li><a href="#d4">Photo analysis</a></li>
+      <li><a href="#d5">Ingredient guidance</a></li>
+      <li><a href="#d6">Product recommendations</a></li>
+      <li><a href="#d7">What we never do</a></li>
+      <li><a href="#d8">When to see a professional</a></li>
+      <li><a href="#d9">Contact</a></li>
+    </ol>
+  </aside>
+
+  <main class="content">
+
+    <section id="d1">
+      <p class="section-number">Section 01</p>
+      <h2>The Short Version</h2>
+      <div class="warning">
+        <p class="warning-label">Important</p>
+        <p>ÉclaireSkin provides AI-generated skincare guidance. It is a guide, not a diagnosis — you know your skin best. For personalised medical advice, a dermatologist is always worth consulting.</p>
+      </div>
+      <p>Everything ÉclaireSkin tells you — skin observations, ingredient analysis, routine suggestions — is generated by artificial intelligence, personalised to the profile you provide. It is educational and informational, not medical or clinical.</p>
+      <p>This disclaimer applies to all features of the Service: the skin profile quiz, photo analysis, ingredient checker, routine builder, tips and articles, and any premium features.</p>
+    </section>
+
+    <section id="d2">
+      <p class="section-number">Section 02</p>
+      <h2>Not Medical Advice</h2>
+      <p>ÉclaireSkin is not a medical service. Nothing in the Service constitutes:</p>
+      <ul>
+        <li>Medical advice</li>
+        <li>Clinical diagnosis of any skin condition, disease, or disorder</li>
+        <li>A recommendation to start, stop, or change any medical treatment</li>
+        <li>A substitute for consultation with a dermatologist, doctor, or other qualified health professional</li>
+      </ul>
+      <p>If you have concerns about a skin condition — particularly anything painful, rapidly changing, or affecting your health — please see a qualified medical professional. Do not delay seeking medical care because of anything you read in this Service.</p>
+    </section>
+
+    <section id="d3">
+      <p class="section-number">Section 03</p>
+      <h2>AI-Generated Content</h2>
+      <p>All guidance, observations, and recommendations in ÉclaireSkin are generated by artificial intelligence — specifically the Claude API provided by Anthropic. AI-generated content is clearly labelled throughout the Service.</p>
+      <div class="callout">
+        AI does not know everything about your skin, your health history, your allergies, or your circumstances. It works from the information you provide and the limits of its training. It can be wrong.
+      </div>
+      <p>AI-generated content:</p>
+      <ul>
+        <li>May not be accurate, complete, or appropriate for your individual situation</li>
+        <li>Is based on general skincare knowledge — not a clinical assessment of you</li>
+        <li>Should be used as a starting point for your own research, not as a definitive answer</li>
+        <li>Does not account for drug interactions, medical conditions, or prescription treatments you may be using</li>
+      </ul>
+      <p>We do not warrant that AI-generated content will be error-free or uninterrupted.</p>
+    </section>
+
+    <section id="d4">
+      <p class="section-number">Section 04</p>
+      <h2>Photo Analysis</h2>
+      <p>When you upload a photo, ÉclaireSkin generates descriptive observations about your skin appearance — for example, "skin appears dehydrated" or "barrier may be compromised." These are observational descriptions based on visual appearance, not clinical assessments.</p>
+      <div class="boundary-grid">
+        <div class="boundary-col never">
+          <h4>What photo analysis never does</h4>
+          <ul>
+            <li>Diagnose any skin condition</li>
+            <li>Identify medical disorders</li>
+            <li>Assess moles or lesions</li>
+            <li>Replace a dermatologist's evaluation</li>
+          </ul>
+        </div>
+        <div class="boundary-col always">
+          <h4>What photo analysis does</h4>
+          <ul>
+            <li>Describes visible skin appearance</li>
+            <li>Suggests relevant ingredient types</li>
+            <li>Personalises to your skin profile</li>
+            <li>Flags areas worth monitoring</li>
+          </ul>
+        </div>
+      </div>
+      <p>Photo quality, lighting, skin tone, and camera settings all affect observations. Results are a guide only. If you notice any unusual skin changes — new moles, changing lesions, persistent redness or irritation — please see a doctor.</p>
+    </section>
+
+    <section id="d5">
+      <p class="section-number">Section 05</p>
+      <h2>Ingredient Guidance</h2>
+      <p>The ingredient checker provides contextual observations about skincare ingredients personalised to your skin profile. It is designed to help you understand ingredient lists — not to provide a safety certification or clinical assessment.</p>
+      <div class="callout">
+        <strong>Ingredient observations are informational only.</strong> They do not constitute a warranty that any ingredient is safe for your individual skin, health circumstances, or medical conditions.
+      </div>
+      <p>Important limitations:</p>
+      <ul>
+        <li>Ingredient analysis does not account for your full medical history or any conditions you have not disclosed</li>
+        <li>If you have known allergies or sensitivities, always check the full product label independently</li>
+        <li>Pregnancy and breastfeeding guidance is provided as general cosmetic information — always confirm with your midwife, GP, or obstetrician</li>
+        <li>If you have a skin condition being treated by a doctor, check ingredient changes with them first</li>
+      </ul>
+      <p>Always patch test new products, regardless of what any ingredient analysis tool tells you.</p>
+    </section>
+
+    <section id="d6">
+      <p class="section-number">Section 06</p>
+      <h2>Product Recommendations</h2>
+      <p>Where ÉclaireSkin suggests product lines, these suggestions:</p>
+      <ul>
+        <li>Are based only on brands you have explicitly listed — we never suggest brands unprompted</li>
+        <li>Reference product lines (e.g. "the CeraVe hydrating range"), not specific product SKUs</li>
+        <li>Are not influenced by advertising, affiliate commissions, or brand relationships — ÉclaireSkin accepts none of these</li>
+        <li>Do not account for regional availability, current formulations, or individual product variants</li>
+      </ul>
+      <p>Product formulations change. Always read the current label of any product before use, particularly if you have allergies or sensitivities.</p>
+    </section>
+
+    <section id="d7">
+      <p class="section-number">Section 07</p>
+      <h2>What We Never Do</h2>
+      <div class="boundary-grid">
+        <div class="boundary-col never">
+          <h4>Never</h4>
+          <ul>
+            <li>Diagnose skin conditions or diseases</li>
+            <li>Recommend specific prescription treatments</li>
+            <li>Assess moles, lesions, or suspicious skin changes</li>
+            <li>Guarantee skincare results or timelines</li>
+            <li>Accept commissions or advertising from brands</li>
+            <li>Recommend brands you haven't specified</li>
+          </ul>
+        </div>
+        <div class="boundary-col always">
+          <h4>Always</h4>
+          <ul>
+            <li>Label AI-generated content clearly</li>
+            <li>Recommend seeing a professional for clinical concerns</li>
+            <li>Set realistic expectations (8–12 weeks for results)</li>
+            <li>Personalise to your skin profile only</li>
+            <li>Keep your skin data on your device</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="d8">
+      <p class="section-number">Section 08</p>
+      <h2>When to See a Professional</h2>
+      <p>Please consult a dermatologist or doctor if you experience any of the following — ÉclaireSkin is not the right tool for these situations:</p>
+      <ul>
+        <li>A mole, lesion, or skin mark that is new, changing, or unusual</li>
+        <li>Persistent, painful, or rapidly worsening skin conditions</li>
+        <li>Suspected allergic reactions or contact dermatitis</li>
+        <li>Any skin concern during pregnancy that you are unsure about</li>
+        <li>Skin conditions that have been diagnosed and are under medical management</li>
+        <li>Any concern that is affecting your health, wellbeing, or daily life</li>
+      </ul>
+      <div class="callout">
+        A good dermatologist is irreplaceable. ÉclaireSkin is designed to complement professional care — not replace it.
+      </div>
+    </section>
+
+    <section id="d9">
+      <p class="section-number">Section 09</p>
+      <h2>Contact</h2>
+      <p>Questions or feedback? We'd love to hear from you.</p>
+      <p>Email: <a href="mailto:hello@eclaireskin.com">hello@eclaireskin.com</a><br />
+      Website: eclaireskin.com</p>
+      <p style="margin-top:1.5rem; font-size:0.85rem; color: var(--mid);">See also: <a href="/terms">Terms of Use</a> · <a href="/privacy">Privacy Policy</a></p>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="/terms">Terms of Use</a>
+    <a href="/disclaimer">Disclaimer</a>
+    <a href="/privacy">Privacy Policy</a>
+  </div>
+  <p>© 2026 ÉclaireSkin &nbsp;·&nbsp; AI skincare guidance, not medical advice &nbsp;·&nbsp; <a href="mailto:hello@eclaireskin.com">hello@eclaireskin.com</a></p>
+  <p style="margin-top:0.5rem; font-size:0.72rem;">Questions or feedback? Email us at <a href="mailto:hello@eclaireskin.com">hello@eclaireskin.com</a></p>
+</footer>
+
+</body>
+</html>

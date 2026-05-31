@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Use — ÉclaireSkin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --sage: #4A7C59;
+      --sage-light: #f0f5f1;
+      --sage-mid: #d4e4d9;
+      --sage-dark: #2d4f39;
+      --ink: #1a1a18;
+      --mid: #5a5a55;
+      --pale: #f8f9f6;
+      --white: #ffffff;
+      --accent: #c8a96e;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      background: var(--pale);
+      color: var(--ink);
+      line-height: 1.75;
+      font-size: 16px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--sage-mid);
+      padding: 0 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--sage);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+
+    .logo span {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--mid);
+      font-size: 0.85rem;
+      margin-left: 0.75rem;
+    }
+
+    nav a {
+      font-size: 0.8rem;
+      color: var(--sage);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--sage-mid);
+      padding-bottom: 1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    nav a:hover { color: var(--sage-dark); border-color: var(--sage-dark); }
+
+    /* ── HERO BAND ── */
+    .hero {
+      background: var(--sage);
+      color: var(--white);
+      padding: 4rem 2rem 3rem;
+    }
+
+    .hero-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .doc-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--sage-mid);
+      margin-bottom: 0.75rem;
+    }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-weight: 300;
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      font-size: 0.8rem;
+      color: var(--sage-mid);
+      letter-spacing: 0.04em;
+    }
+
+    .hero-meta span strong {
+      color: var(--white);
+      font-weight: 400;
+    }
+
+    .review-banner {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 4px;
+      padding: 0.75rem 1.25rem;
+      margin-top: 1.5rem;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.85);
+      font-style: italic;
+    }
+
+    /* ── LAYOUT ── */
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem 4rem;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    /* ── SIDEBAR TOC ── */
+    .toc {
+      position: sticky;
+      top: 80px;
+      padding: 2rem 0;
+    }
+
+    .toc-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .toc ol {
+      list-style: none;
+      counter-reset: toc;
+    }
+
+    .toc ol li {
+      counter-increment: toc;
+      margin-bottom: 0.35rem;
+    }
+
+    .toc ol li a {
+      font-size: 0.78rem;
+      color: var(--mid);
+      text-decoration: none;
+      display: flex;
+      gap: 0.5rem;
+      align-items: baseline;
+      transition: color 0.2s;
+      line-height: 1.4;
+    }
+
+    .toc ol li a::before {
+      content: counter(toc, decimal-leading-zero);
+      font-size: 0.65rem;
+      color: var(--sage);
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+
+    .toc ol li a:hover { color: var(--sage-dark); }
+
+    /* ── CONTENT ── */
+    .content {
+      padding-top: 3rem;
+    }
+
+    section {
+      margin-bottom: 3rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--sage-mid);
+    }
+
+    section:last-of-type { border-bottom: none; }
+
+    .section-number {
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--sage);
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+    }
+
+    h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.75rem;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    h3 {
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--sage-dark);
+      margin: 1.5rem 0 0.5rem;
+    }
+
+    p {
+      margin-bottom: 0.9rem;
+      color: var(--ink);
+      font-size: 0.92rem;
+    }
+
+    ul, ol {
+      margin: 0.5rem 0 1rem 1.25rem;
+    }
+
+    li {
+      font-size: 0.92rem;
+      margin-bottom: 0.4rem;
+      color: var(--ink);
+    }
+
+    .callout {
+      background: var(--sage-light);
+      border-left: 3px solid var(--sage);
+      padding: 1rem 1.25rem;
+      border-radius: 0 4px 4px 0;
+      margin: 1.25rem 0;
+      font-size: 0.88rem;
+      color: var(--mid);
+      font-style: italic;
+      line-height: 1.65;
+    }
+
+    .callout strong {
+      color: var(--sage-dark);
+      font-style: normal;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0;
+      font-size: 0.85rem;
+    }
+
+    td {
+      padding: 0.65rem 0.85rem;
+      border: 1px solid var(--sage-mid);
+      vertical-align: top;
+      line-height: 1.55;
+    }
+
+    td:first-child {
+      background: var(--sage-light);
+      font-weight: 500;
+      width: 35%;
+      color: var(--sage-dark);
+      font-size: 0.8rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink);
+      color: rgba(255,255,255,0.5);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      font-size: 0.78rem;
+      line-height: 1.8;
+    }
+
+    footer a {
+      color: var(--sage-mid);
+      text-decoration: none;
+    }
+
+    footer a:hover { color: var(--white); }
+
+    footer .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      .page {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+      .toc { display: none; }
+      .hero { padding: 2.5rem 1.25rem 2rem; }
+      .page { padding: 0 1.25rem 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="/">ÉclaireSkin <span>AI skincare guidance</span></a>
+    <nav><a href="/disclaimer">Disclaimer →</a></nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <p class="doc-label">Legal · Terms of Use</p>
+    <h1>Terms of Use</h1>
+    <div class="hero-meta">
+      <span><strong>Last updated:</strong> 29 May 2026</span>
+      <span><strong>Applies to:</strong> eclaireskin.com</span>
+      <span><strong>Governing law:</strong> New Zealand</span>
+    </div>
+    <p class="review-banner">These terms are currently under legal review. If you have any questions, contact us at hello@eclaireskin.com</p>
+  </div>
+</div>
+
+<div class="page">
+
+  <aside class="toc">
+    <p class="toc-label">Contents</p>
+    <ol>
+      <li><a href="#s1">About these terms</a></li>
+      <li><a href="#s2">Minimum age — 16</a></li>
+      <li><a href="#s3">Your account & profile</a></li>
+      <li><a href="#s4">Subscriptions & payments</a></li>
+      <li><a href="#s5">AI-generated content</a></li>
+      <li><a href="#s6">Recommendations</a></li>
+      <li><a href="#s7">Photos you upload</a></li>
+      <li><a href="#s8">Acceptable use</a></li>
+      <li><a href="#s9">Intellectual property</a></li>
+      <li><a href="#s10">Privacy</a></li>
+      <li><a href="#s11">Limitation of liability</a></li>
+      <li><a href="#s12">Governing law</a></li>
+      <li><a href="#s13">Contact</a></li>
+    </ol>
+  </aside>
+
+  <main class="content">
+
+    <section id="s1">
+      <p class="section-number">Section 01</p>
+      <h2>About These Terms</h2>
+      <p>These Terms of Use govern your access to and use of ÉclaireSkin ("the Service"), an AI-powered skincare guidance tool available at eclaireskin.com. By using the Service, you agree to be bound by these Terms.</p>
+      <p>ÉclaireSkin is operated by its founder ("we", "us", "our"). If you do not agree to these Terms, please do not use the Service.</p>
+      <p>We may update these Terms from time to time. Continued use of the Service after changes are posted constitutes your acceptance of the revised Terms. The date at the top of this page reflects the most recent update.</p>
+    </section>
+
+    <section id="s2">
+      <p class="section-number">Section 02</p>
+      <h2>Minimum Age — 16</h2>
+      <div class="callout">
+        <strong>You must be at least 16 years old to use ÉclaireSkin.</strong> By using the Service, you confirm that you are 16 years of age or older.
+      </div>
+      <p>If you are between 16 and 18 years of age, you confirm that you have the consent of a parent or legal guardian to use the Service and to agree to these Terms.</p>
+      <p>We do not knowingly collect personal information from users under the age of 16. If you believe a person under 16 has used the Service, please contact us at <a href="mailto:hello@eclaireskin.com">hello@eclaireskin.com</a>.</p>
+    </section>
+
+    <section id="s3">
+      <p class="section-number">Section 03</p>
+      <h2>Your Account &amp; Skin Profile</h2>
+      <p>You do not need to create an account to use the core features of the Service. Your skin profile data is stored on your device only and is not transmitted to or held on our servers.</p>
+      <p>You are responsible for the accuracy of the information you provide. Inaccurate profile information may affect the relevance of guidance provided.</p>
+      <p>If you choose to share your email address for waitlist or notification purposes, we will handle that data in accordance with our Privacy Policy.</p>
+    </section>
+
+    <section id="s4">
+      <p class="section-number">Section 04</p>
+      <h2>Subscriptions &amp; Payments</h2>
+
+      <h3>Free tier</h3>
+      <p>Core features are available at no charge, subject to usage limits described in the Service (for example, three ingredient checks per month).</p>
+
+      <h3>Premium tier</h3>
+      <p>Premium features are available on a paid subscription basis. Pricing is displayed in New Zealand Dollars (NZD) and is subject to change with notice. By subscribing, you authorise us to charge the applicable fee to your nominated payment method on a recurring basis.</p>
+
+      <h3>Cancellation</h3>
+      <p>You may cancel your subscription at any time. Cancellation takes effect at the end of the current billing period. We do not provide refunds for partial periods unless required by applicable law.</p>
+
+      <h3>Consumer rights</h3>
+      <p>Nothing in these Terms limits your rights under the Consumer Guarantees Act 1993 or the Fair Trading Act 1986 (New Zealand). If a subscription service fails to meet the guarantee of acceptable quality, you may be entitled to a remedy under those Acts.</p>
+    </section>
+
+    <section id="s5">
+      <p class="section-number">Section 05</p>
+      <h2>AI-Generated Content</h2>
+      <p>The guidance, observations, and recommendations provided by ÉclaireSkin are generated by artificial intelligence — specifically via the Claude API provided by Anthropic. All AI-generated content is clearly labelled within the Service.</p>
+      <div class="callout">
+        AI-generated content may not always be accurate, complete, or appropriate for your individual circumstances. It should not be relied upon as a substitute for professional skincare or medical advice.
+      </div>
+      <p>We do not warrant that AI-generated content will be error-free, uninterrupted, or free from inaccuracies. See our <a href="/disclaimer">Disclaimer</a> for full detail on the limitations of the Service.</p>
+    </section>
+
+    <section id="s6">
+      <p class="section-number">Section 06</p>
+      <h2>Product &amp; Ingredient Recommendations</h2>
+      <p>Where the Service suggests product lines or ingredient types, these suggestions are:</p>
+      <ul>
+        <li>Personalised to the skin profile and brands you have specified</li>
+        <li>Based on ingredient type and general suitability — not on brand relationships, commissions, or advertising</li>
+        <li>References to product lines (e.g. "the CeraVe hydrating range"), not specific product SKUs</li>
+      </ul>
+      <p>ÉclaireSkin does not accept advertising revenue, affiliate commissions, or payment from any brand. Recommendations are not influenced by any commercial relationship. Product formulations change and regional availability varies — always check the current label before use.</p>
+    </section>
+
+    <section id="s7">
+      <p class="section-number">Section 07</p>
+      <h2>Photos You Upload</h2>
+      <p>When you upload a photo for skin analysis, that photo is processed via the Anthropic Claude API to generate your observations. Photos are not stored on our servers after processing.</p>
+      <p>By uploading a photo, you confirm that:</p>
+      <ul>
+        <li>You are the person depicted in the photo, or you have the right to upload it</li>
+        <li>You consent to the photo being processed by the Service for the purpose of generating your skin analysis</li>
+      </ul>
+      <p>Do not upload photos of other people without their consent, or photos depicting minors.</p>
+    </section>
+
+    <section id="s8">
+      <p class="section-number">Section 08</p>
+      <h2>Acceptable Use</h2>
+      <p>You agree not to use the Service to:</p>
+      <ul>
+        <li>Attempt to circumvent any usage limits or access controls</li>
+        <li>Reverse-engineer, scrape, or extract data from the Service</li>
+        <li>Use the Service for any unlawful purpose</li>
+        <li>Impersonate another person or provide false information</li>
+        <li>Upload photos of individuals without their consent</li>
+      </ul>
+      <p>We reserve the right to suspend or terminate access to the Service for users who breach these Terms.</p>
+    </section>
+
+    <section id="s9">
+      <p class="section-number">Section 09</p>
+      <h2>Intellectual Property</h2>
+      <p>All content, design, code, and branding associated with ÉclaireSkin — including the É letterform logo — is owned by or licensed to us. You may not reproduce, copy, or distribute any part of the Service without our prior written permission.</p>
+      <p>Your skin profile data, photos, and personal information remain yours. We claim no ownership over data you provide to the Service.</p>
+    </section>
+
+    <section id="s10">
+      <p class="section-number">Section 10</p>
+      <h2>Privacy</h2>
+      <p>Your privacy is important to us. Our <a href="/privacy">Privacy Policy</a> explains how we handle your personal information. Key commitments:</p>
+      <ul>
+        <li>Skin profile data is stored on your device only — not on our servers</li>
+        <li>We do not sell personal data</li>
+        <li>We do not use personal data for advertising profiling</li>
+      </ul>
+    </section>
+
+    <section id="s11">
+      <p class="section-number">Section 11</p>
+      <h2>Limitation of Liability</h2>
+      <p>To the maximum extent permitted by applicable law:</p>
+      <ul>
+        <li>The Service is provided "as is" without warranty of any kind, express or implied</li>
+        <li>We are not liable for any loss or damage arising from your use of or reliance on AI-generated guidance</li>
+        <li>We are not liable for any adverse reaction to a product or ingredient referenced in the Service</li>
+        <li>Our total liability to you for any claim is limited to the amount you paid us in the 12 months preceding the claim</li>
+      </ul>
+      <p>Nothing in these Terms excludes or limits liability that cannot be excluded or limited under New Zealand law, including under the Consumer Guarantees Act 1993 where the Service is acquired for personal or household use.</p>
+    </section>
+
+    <section id="s12">
+      <p class="section-number">Section 12</p>
+      <h2>Governing Law</h2>
+      <p>These Terms are governed by the laws of New Zealand. Any dispute arising under these Terms will be subject to the non-exclusive jurisdiction of the New Zealand courts.</p>
+    </section>
+
+    <section id="s13">
+      <p class="section-number">Section 13</p>
+      <h2>Contact</h2>
+      <p>Questions or feedback about these Terms? We'd love to hear from you.</p>
+      <table>
+        <tr><td>Email</td><td><a href="mailto:hello@eclaireskin.com">hello@eclaireskin.com</a></td></tr>
+        <tr><td>Website</td><td>eclaireskin.com</td></tr>
+        <tr><td>Document date</td><td>29 May 2026</td></tr>
+      </table>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="/terms">Terms of Use</a>
+    <a href="/disclaimer">Disclaimer</a>
+    <a href="/privacy">Privacy Policy</a>
+  </div>
+  <p>© 2026 ÉclaireSkin &nbsp;·&nbsp; AI skincare guidance, not medical advice &nbsp;·&nbsp; <a href="mailto:hello@eclaireskin.com">hello@eclaireskin.com</a></p>
+  <p style="margin-top:0.5rem; font-size:0.72rem;">Questions or feedback? Email us at <a href="mailto:hello@eclaireskin.com">hello@eclaireskin.com</a></p>
+</footer>
+
+</body>
+</html>
