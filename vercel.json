@@ -1,6 +1,7 @@
 {
   "version": 2,
   "builds": [
+    { "src": "sitemap.xml", "use": "@vercel/static" }
     { "src": "index.html", "use": "@vercel/static" },
     { "src": "app.html", "use": "@vercel/static" },
     { "src": "manifest.json", "use": "@vercel/static" },
@@ -14,6 +15,7 @@
     { "src": "api/subscribe.js", "use": "@vercel/node" }
   ],
   "routes": [
+    { "src": "sitemap.xml", "use": "@vercel/static" }
     { "src": "/api/analyse", "dest": "/api/analyse.js" },
     { "src": "/api/subscribe", "dest": "/api/subscribe.js" },
     { "src": "/privacy", "dest": "/privacy.html" },
