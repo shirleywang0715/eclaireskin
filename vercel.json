@@ -1,7 +1,6 @@
 {
   "version": 2,
   "builds": [
-    { "src": "sitemap.xml", "use": "@vercel/static" }
     { "src": "index.html", "use": "@vercel/static" },
     { "src": "app.html", "use": "@vercel/static" },
     { "src": "manifest.json", "use": "@vercel/static" },
@@ -11,17 +10,18 @@
     { "src": "privacy.html", "use": "@vercel/static" },
     { "src": "terms.html", "use": "@vercel/static" },
     { "src": "disclaimer.html", "use": "@vercel/static" },
+    { "src": "sitemap.xml", "use": "@vercel/static" },
     { "src": "api/analyse.js", "use": "@vercel/node" },
     { "src": "api/subscribe.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "sitemap.xml", "use": "@vercel/static" }
     { "src": "/api/analyse", "dest": "/api/analyse.js" },
     { "src": "/api/subscribe", "dest": "/api/subscribe.js" },
     { "src": "/privacy", "dest": "/privacy.html" },
     { "src": "/terms", "dest": "/terms.html" },
     { "src": "/disclaimer", "dest": "/disclaimer.html" },
     { "src": "/app", "dest": "/app.html" },
+    { "src": "/sitemap.xml", "dest": "/sitemap.xml" },
     { "src": "/manifest.json", "dest": "/manifest.json" },
     { "src": "/sw.js", "dest": "/sw.js" },
     { "src": "/icon-192.png", "dest": "/icon-192.png" },
