@@ -305,5 +305,219 @@ function injectFeedbackLink(){
   });
 }
 </script>
+  /**
+ * ÉclaireSkin — GA4 Custom Event Tracking
+ * Drop-in module for app.html
+ *
+ * INSTALL:
+ *   1. Paste this entire <script> block into app.html just before </body>
+ *   2. Add one line to renderApp() — see WIRING below
+ *
+ * REQUIRES: GA4 (gtag.js) already loaded in <head> via G-PPLVBR3DJ6
+ */
+
+(function () {
+  'use strict';
+
+  // ─── Safety wrapper ───────────────────────────────────────────────────────
+  function fire(eventName, params) {
+    try {
+      if (typeof gtag === 'function') {
+        gtag('event', eventName, params || {});
+      }
+    } catch (e) {}
+  }
+
+
+  // ─── Session start ────────────────────────────────────────────────────────
+  fire('app_session_start', {
+    has_profile: !!localStorage.getItem('eclaireSkinProfile'),
+    is_returning: !!localStorage.getItem('eclaireSkinVisited'),
+  });
+  localStorage.setItem('eclaireSkinVisited', '1');
+
+
+  // ─── Tab tracking ─────────────────────────────────────────────────────────
+  // WIRING: Add this one line at the end of your renderApp() function,
+  // after the innerHTML assignment:
+  //
+  //   window.ES_Analytics && window.ES_Analytics._tabSwitched(tab);
+  //
+  // That's the only code change needed in your existing JS.
+
+  var currentTab = null;
+  var tabEnterTime = null;
+
+  function trackTabSwitch(newTabName) {
+    var now = Date.now();
+
+    // Log time spent on the tab we're leaving
+    if (currentTab && tabEnterTime) {
+      var seconds = Math.round((now - tabEnterTime) / 1000);
+      fire('tab_time_spent', {
+        tab_name: currentTab,
+        seconds_on_tab: seconds,
+      });
+    }
+
+    fire('tab_viewed', { tab_name: newTabName });
+
+    currentTab = newTabName;
+    tabEnterTime = now;
+
+    // If switching to Tips (news), re-init scroll tracking on the new DOM
+    if (newTabName === 'news') {
+      setTimeout(initTipsScrollTracking, 300);
+    }
+  }
+
+  // Called directly by renderApp on every tab switch (including initial load)
+  window.ES_Analytics = window.ES_Analytics || {};
+  window.ES_Analytics._tabSwitched = function (tabId) {
+    trackTabSwitch(tabId);
+  };
+
+
+  // ─── Quiz tracking ────────────────────────────────────────────────────────
+  // WIRING: In your quiz "next step" handler, add:
+  //   window.ES_Analytics.quizStep(stepIndex, stepName);
+  //
+  // On final quiz submit, add:
+  //   window.ES_Analytics.quizCompleted();
+  //
+  // On quiz close/dismiss without finishing, add:
+  //   window.ES_Analytics.quizAbandoned(lastStepReached);
+  //
+  // Step names (match your 10-step quiz order, adjust if needed):
+  //   1:'skin_type', 2:'concerns', 3:'triggers', 4:'life_stage',
+  //   5:'age', 6:'environment', 7:'experience', 8:'budget', 9:'goals', 10:'confirm'
+
+  var quizStartTime = null;
+  var quizHighestStep = 0;
+
+  window.ES_Analytics.quizStep = function (stepNumber, stepName) {
+    if (!quizStartTime) quizStartTime = Date.now();
+    quizHighestStep = Math.max(quizHighestStep, stepNumber);
+    fire('quiz_step_completed', {
+      step_number: stepNumber,
+      step_name: stepName || 'step_' + stepNumber,
+    });
+  };
+
+  window.ES_Analytics.quizCompleted = function () {
+    var duration = quizStartTime ? Math.round((Date.now() - quizStartTime) / 1000) : null;
+    fire('quiz_completed', {
+      total_steps: quizHighestStep,
+      completion_time_seconds: duration,
+    });
+    quizStartTime = null;
+    quizHighestStep = 0;
+  };
+
+  window.ES_Analytics.quizAbandoned = function (lastStep) {
+    fire('quiz_abandoned', {
+      last_step_reached: lastStep || quizHighestStep,
+    });
+    quizStartTime = null;
+    quizHighestStep = 0;
+  };
+
+  // Catch browser/tab close mid-quiz
+  window.addEventListener('beforeunload', function () {
+    if (quizStartTime && quizHighestStep > 0) {
+      fire('quiz_abandoned', { last_step_reached: quizHighestStep });
+    }
+  });
+
+
+  // ─── Ingredient Checker ───────────────────────────────────────────────────
+  // WIRING: In your ingredient check submit handler, add:
+  //   window.ES_Analytics.ingredientCheck(mode);
+  //   mode: 'photo' | 'search' | 'paste'
+
+  window.ES_Analytics.ingredientCheck = function (mode) {
+    fire('ingredient_check_submitted', {
+      input_mode: mode,
+    });
+  };
+
+
+  // ─── Routine Builder ──────────────────────────────────────────────────────
+  // WIRING: After a routine is successfully generated, add:
+  //   window.ES_Analytics.routineBuilt(mode);
+  //   mode: 'beginner' | 'advanced'
+
+  window.ES_Analytics.routineBuilt = function (mode) {
+    fire('routine_built', {
+      mode: mode,
+    });
+  };
+
+
+  // ─── Photo Analysis ───────────────────────────────────────────────────────
+  // WIRING: When the user submits a photo for skin analysis, add:
+  //   window.ES_Analytics.photoAnalysisSubmitted();
+
+  window.ES_Analytics.photoAnalysisSubmitted = function () {
+    fire('photo_analysis_submitted', {});
+  };
+
+
+  // ─── Upgrade prompt ───────────────────────────────────────────────────────
+  // WIRING: When a free-tier limit is hit and upgrade prompt is shown, add:
+  //   window.ES_Analytics.upgradeSeen(trigger);
+  //   trigger: 'ingredient_limit' | 'routine_limit' | 'general'
+
+  window.ES_Analytics.upgradeSeen = function (trigger) {
+    fire('upgrade_prompt_seen', {
+      trigger: trigger || 'general',
+    });
+  };
+
+
+  // ─── Email capture ────────────────────────────────────────────────────────
+  // WIRING: After a successful Loops subscribe API call, add:
+  //   window.ES_Analytics.emailCaptured(source);
+  //   source: 'post_quiz' | 'me_tab' | 'landing'
+
+  window.ES_Analytics.emailCaptured = function (source) {
+    fire('email_capture_submitted', {
+      source: source || 'unknown',
+    });
+  };
+
+
+  // ─── Tips tab scroll depth ────────────────────────────────────────────────
+  // Automatically attaches when the Tips (news) tab is opened.
+  // Tracks 25%, 50%, 75%, 100% scroll milestones within #tab-body.
+  // No wiring needed — fires automatically via _tabSwitched above.
+
+  function initTipsScrollTracking() {
+    var container = document.getElementById('tab-body');
+    if (!container) return;
+
+    // Avoid attaching duplicate listeners on repeat tab visits
+    if (container._scrollTracked) return;
+    container._scrollTracked = true;
+
+    var milestones = [25, 50, 75, 100];
+    var fired = {};
+
+    container.addEventListener('scroll', function () {
+      var scrolled = container.scrollTop + container.clientHeight;
+      var total = container.scrollHeight;
+      if (total === 0) return;
+
+      var pct = Math.round((scrolled / total) * 100);
+      milestones.forEach(function (m) {
+        if (pct >= m && !fired[m]) {
+          fired[m] = true;
+          fire('tips_scroll_depth', { depth_percent: m });
+        }
+      });
+    }, { passive: true });
+  }
+
+})();
 </body>
 </html>
