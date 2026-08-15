@@ -11,6 +11,7 @@
     { "src": "terms.html", "use": "@vercel/static" },
     { "src": "disclaimer.html", "use": "@vercel/static" },
     { "src": "about.html", "use": "@vercel/static" },
+    { "src": "assets/**/*", "use": "@vercel/static" },
     { "src": "learn/**/*", "use": "@vercel/static" },
     { "src": "sitemap.xml", "use": "@vercel/static" },
     { "src": "api/analyse.js", "use": "@vercel/node" },
