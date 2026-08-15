@@ -8,6 +8,19 @@ Primary starting audience: New Zealand women aged roughly 28–45 who are rebuil
 
 Core message: **“Understand what your skin needs before buying another product.”**
 
+## Legal gate before public acquisition
+
+ÉclaireSkin should not run paid campaigns or actively promote health-related content until New Zealand counsel has reviewed the product scope and the reusable content format. The current New Zealand Therapeutic and Health Advertising Code applies to health advertising on an advertiser's own website, social channels, apps, and email as well as paid media.
+
+Work can continue safely as preparation rather than publication:
+
+1. Draft the article template, author page, sourcing standard, disclaimer, and first content cluster.
+2. Give counsel one representative article, the page CTA, the product description, and the AI-analysis flow to review together.
+3. Turn counsel's feedback into a written claims checklist used for every future page.
+4. Publish only pages that pass that checklist; route new claim types back for review.
+
+Avoid therapeutic promises, diagnosis, prevention/treatment language, implied professional endorsement, guaranteed outcomes, and before/after claims until counsel has expressly approved the relevant wording and evidence standard. A disclaimer does not repair an otherwise misleading or therapeutic claim.
+
 ## Channel roles
 
 ### Search: the acquisition engine
@@ -21,6 +34,17 @@ Publish useful pages for questions people already ask. Begin with:
 5. Damaged skin barrier: signs and a gentle routine
 
 Each page should answer the question fully, use cautious educational language, include a short disclaimer, and end with one soft invitation to the free skin profile.
+
+Use a small, high-quality topic cluster instead of mass-producing AI articles. Each page should include:
+
+- a clear byline and honest explanation of how the article was created and reviewed
+- primary or reputable clinical sources linked near the relevant claims
+- a last-reviewed date that changes only after a substantive review
+- plain-English distinctions between appearance, common skincare concerns, and conditions requiring professional assessment
+- an educational disclaimer and a non-diagnostic CTA
+- a descriptive title, meta description, canonical URL, internal links, and inclusion in the XML sitemap
+
+Google treats health-adjacent topics as especially trust-sensitive. The goal is therefore not maximum article volume; it is a small library that is genuinely useful, original, transparent about authorship and AI assistance, and strong enough that a reader would bookmark or share it.
 
 ### Instagram: trust and proof
 
