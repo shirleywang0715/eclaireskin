@@ -24,6 +24,7 @@
     { "src": "/terms", "dest": "/terms.html" },
     { "src": "/disclaimer", "dest": "/disclaimer.html" },
     { "src": "/about", "dest": "/about.html" },
+    { "src": "/assets/(.*)", "dest": "/assets/$1" },
     { "src": "/learn", "dest": "/learn/index.html" },
     { "src": "/learn/shared.css", "dest": "/learn/shared.css" },
     { "src": "/learn/(.*)", "dest": "/learn/$1.html" },
